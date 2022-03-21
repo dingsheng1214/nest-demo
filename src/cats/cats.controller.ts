@@ -29,7 +29,6 @@ export class CatsController {
   // http
   @Get('/getByName')
   async find(@Query('name') name: string): Promise<Cat[]> {
-    console.log(name);
     return this.catsService.find(name);
   }
 
