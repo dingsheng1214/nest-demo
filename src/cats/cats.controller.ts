@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  Patch,
   Post,
   Query,
   UseFilters,
@@ -16,6 +17,7 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { Cat } from './schemas/cat.schema';
 import { CustomException } from '../common/exception/custom.exception';
 import { HttpExceptionFilter } from '../common/filter/http-exception.filter';
+import { UpdateCatDto } from './dto/update-cat.dto';
 
 @Controller('cats')
 export class CatsController {
@@ -50,6 +52,11 @@ export class CatsController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.catsService.delete(id);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() cat: UpdateCatDto) {
+    return this.catsService.update(id, cat);
   }
 
   /**

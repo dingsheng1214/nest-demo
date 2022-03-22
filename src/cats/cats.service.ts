@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { Cat, CatDocument } from './schemas/cat.schema';
+import { UpdateCatDto } from './dto/update-cat.dto';
 
 @Injectable()
 export class CatsService {
@@ -11,8 +12,9 @@ export class CatsService {
   ) {}
 
   async create(createCatDto: CreateCatDto): Promise<Cat> {
-    const createdCat = await this.catModel.create(createCatDto);
-    return createdCat;
+    console.log(createCatDto);
+    console.log(createCatDto instanceof CreateCatDto);
+    return await this.catModel.create(createCatDto);
   }
 
   async find(name: string): Promise<Cat[]> {
@@ -32,5 +34,9 @@ export class CatsService {
       .findByIdAndRemove({ _id: id })
       .exec();
     return deletedCat;
+  }
+
+  async update(id: string, cat: UpdateCatDto) {
+    return this.catModel.updateOne({ _id: id }, cat);
   }
 }
