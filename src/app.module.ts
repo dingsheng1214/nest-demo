@@ -10,11 +10,24 @@ import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoffeesModule } from './coffees/coffees.module';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: '5432',
+      username: 'postgres',
+      password: 'postgres',
+      database: 'postgres',
+      autoLoadEntities: true,
+      synchronize: true, // 生产环境禁用，自动根据entity实体类生成对应的SQL 表
+    }),
     MongooseModule.forRoot('mongodb://admin:admin@119.3.214.158:27017/ds-cli'),
     CatsModule,
+    CoffeesModule,
   ],
   providers: [
     // 全局异常过滤器
