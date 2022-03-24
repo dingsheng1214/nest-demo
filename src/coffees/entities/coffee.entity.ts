@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Flavor } from './flavor.entity';
 
 // 每个Entity类代表一个SQL表
 @Entity() // sql table === 'coffee'
@@ -12,6 +19,7 @@ export class Coffee {
   @Column()
   brand: string;
 
-  @Column('simple-array', { nullable: true })
-  flavors: string[];
+  @ManyToMany(() => Flavor, (flavor) => flavor.coffees)
+  @JoinTable()
+  flavors: Flavor[];
 }

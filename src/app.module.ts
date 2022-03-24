@@ -12,6 +12,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
+import { CoffeesController } from './coffees/coffees.controller';
 
 @Module({
   imports: [
@@ -49,6 +50,6 @@ export class AppModule implements NestModule {
         { path: 'cats', method: RequestMethod.POST },
         'cats/(.*)',
       )
-      .forRoutes(CatsController);
+      .forRoutes(CatsController, CoffeesController);
   }
 }

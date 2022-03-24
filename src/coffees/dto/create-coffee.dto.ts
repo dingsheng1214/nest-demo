@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateCoffeeDto {
   @IsString()
@@ -7,6 +7,12 @@ export class CreateCoffeeDto {
   @IsString()
   brand: string;
 
-  @IsString({ each: true })
-  flavors: string[];
+  @IsNumber(
+    {
+      allowNaN: false,
+      allowInfinity: false,
+    },
+    { each: true }, // 检查阵列每一个元素是否都是数字
+  )
+  flavorIds: number[];
 }
