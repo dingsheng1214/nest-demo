@@ -1,9 +1,10 @@
 version: "3"
 
 services:
-  db:
+  postgresdb:
     image: postgres
     restart: always
+    container_name: nest-demo-pg
     ports:
       - "5432:5432"
     environment:
@@ -11,6 +12,32 @@ services:
       POSTGRES_USERNAME: postgres
     volumes:
       - db:/var/lib/postgresql/data
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: nest-demo-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: nest-demo
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./docker-mongo-init.js:/docker-entrypoint-initdb.d/docker-mongo-init.js:ro
+      - db:/var/lib/mongo/data
 volumes:
   db:
     driver: local
+
+#version 填写 docker-compose 文件格式的版本，您可以更改为最新版本
+#mongodb 和 postgresdb 是服务名称，您可以根据需要更改
+#image 是镜像名，通过这个镜像创建容器
+#container_name 是您的容器的名称，它是可选的
+#environment 是将在 mongo/postgresdb 容器上使用的变量
+  #MONGO_INITDB_DATABASE 数据库名称要与 init-mongo.js 相同
+  #MONGO_INITDB_ROOT_USERNAME 填写 root 用户名
+  #MONGO_INITDB_ROOT_PASSWORD 填写 root 密码
+#volumes 定义存放容器的文件夹
+#./docker-mongo-init.js:/docker-entrypoint-initdb.d/docker-mongo-init.js:ro 表示要将 docker-mongo-init.js 复制到 /docker-entrypoint-initdb.d/ 目录下，并设置为只读文件。 /docker-entrypoint-initdb.d 是一个已经在 mongo 容器中创建的文件夹，用于初始化数据库。
+#ports 用于定义要公开的端口，在本例中，使用默认的 MongoDB 端口 27017 直到 27019
+

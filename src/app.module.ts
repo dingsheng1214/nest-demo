@@ -26,7 +26,7 @@ import { CoffeesController } from './coffees/coffees.controller';
       autoLoadEntities: true,
       synchronize: true, // 生产环境禁用，自动根据entity实体类生成对应的SQL 表
     }),
-    MongooseModule.forRoot('mongodb://admin:admin@119.3.214.158:27017/ds-cli'),
+    MongooseModule.forRoot('mongodb://mongo:mongo@localhost:27017/nest-demo'),
     CatsModule,
     CoffeesModule,
   ],
