@@ -13,6 +13,9 @@ async function bootstrap() {
       whitelist: true, //排除dto字段之外的属性
       forbidNonWhitelisted: true, // 包含非dto内的属性则抛出异常
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true, // class-transformer 将会根据TS反射类型进行转换
+      },
     }),
   );
   await app.listen(3000);

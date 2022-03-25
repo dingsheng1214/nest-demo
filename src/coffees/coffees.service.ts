@@ -5,6 +5,7 @@ import { Coffee } from './entities/coffee.entity';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Flavor } from './entities/flavor.entity';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
 @Injectable()
 export class CoffeesService {
@@ -40,6 +41,14 @@ export class CoffeesService {
     });
   }
 
+  findAllWithPagination(paginationQueryDto: PaginationQueryDto) {
+    return this.coffeeRepository.find({
+      take: paginationQueryDto.limit,
+      skip: paginationQueryDto.offset,
+      relations: ['flavors'],
+    });
+  }
+
   async findOne(id: number) {
     const coffee = await this.coffeeRepository.findOne({
       where: { id: id },
@@ -52,6 +61,7 @@ export class CoffeesService {
   }
 
   async update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
+    await this.findOne(id);
     const flavors = await this.flavorRepository.findBy({
       id: In(updateCoffeeDto.flavorIds),
     });
