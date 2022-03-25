@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
-import { In, Repository } from 'typeorm';
+import { Connection, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Flavor } from './entities/flavor.entity';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { Event } from '../events/entities/event.entity';
 
 @Injectable()
 export class CoffeesService {
@@ -16,11 +17,13 @@ export class CoffeesService {
   @InjectRepository(Flavor)
   private flavorRepository: Repository<Flavor>;
 
+  @Inject()
+  private readonly connection: Connection;
+
   // constructor(
   //   @InjectRepository(Coffee)
   //   private readonly coffeeRepository: Repository<Coffee>,
   // ) {}
-
   async create(createCoffeeDto: CreateCoffeeDto) {
     const flavors = await this.flavorRepository.findBy({
       id: In(createCoffeeDto.flavorIds),
@@ -32,7 +35,7 @@ export class CoffeesService {
     // 一并将关联数据 插入 coffee_flavors_flavor 关联表中
     coffee.flavors = flavors;
 
-    return this.coffeeRepository.save(coffee);
+    return this.recommendCoffee(coffee);
   }
 
   findAll() {
@@ -84,5 +87,33 @@ export class CoffeesService {
       throw new NotFoundException(`Coffee #${id} not found`);
     }
     return this.coffeeRepository.remove(coffee);
+  }
+
+  async recommendCoffee(coffee: Coffee) {
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const result = await queryRunner.manager.save(coffee);
+
+      const recommendEvent = new Event();
+      recommendEvent.name = 'recommend_coffee';
+      recommendEvent.type = 'coffee';
+      recommendEvent.payload = { coffeeId: result.id };
+
+      // throw new Error('111');
+      await queryRunner.manager.save(recommendEvent);
+      // 提交事务
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      console.log('111', err);
+      //如果遇到错误，可以回滚事务
+      await queryRunner.rollbackTransaction();
+    } finally {
+      // 确保最终释放 queryRunner
+      await queryRunner.release();
+    }
   }
 }
