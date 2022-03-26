@@ -13,6 +13,7 @@ import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
 import { CoffeesController } from './coffees/coffees.controller';
+import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CoffeesController } from './coffees/coffees.controller';
     MongooseModule.forRoot('mongodb://mongo:mongo@localhost:27017/nest-demo'),
     CatsModule,
     CoffeesModule,
+    CoffeeRatingModule,
   ],
   providers: [
     // 全局异常过滤器
