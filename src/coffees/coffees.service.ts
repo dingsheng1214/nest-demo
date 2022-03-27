@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Flavor } from './entities/flavor.entity';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { Event } from '../events/entities/event.entity';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class CoffeesService {
@@ -19,6 +20,9 @@ export class CoffeesService {
 
   @Inject()
   private readonly connection: Connection;
+
+  @Inject(ConfigService)
+  private readonly configService: ConfigService;
 
   // constructor(
   //   @InjectRepository(Coffee)
