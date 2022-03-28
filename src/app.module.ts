@@ -14,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
 import { CoffeesController } from './coffees/coffees.controller';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
     CatsModule,
     CoffeesModule,
     CoffeeRatingModule,
+    DatabaseModule.register('mysql'),
   ],
   providers: [
     // 全局异常过滤器
