@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
@@ -9,7 +9,9 @@ import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { Event } from '../events/entities/event.entity';
 import { ConfigService } from './config.service';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT }) // 单例
+// @Injectable({ scope: Scope.TRANSIENT }) // 每次注入 实例化
+// @Injectable({ scope: Scope.REQUEST }) // 每个请求 实例化
 export class CoffeesService {
   // Repository是对数据源的抽象，并公开了各种有用的方法来操作数据
   @InjectRepository(Coffee)
@@ -28,6 +30,11 @@ export class CoffeesService {
   //   @InjectRepository(Coffee)
   //   private readonly coffeeRepository: Repository<Coffee>,
   // ) {}
+
+  constructor() {
+    console.log('CoffeesService instantiated');
+  }
+
   async create(createCoffeeDto: CreateCoffeeDto) {
     const flavors = await this.flavorRepository.findBy({
       id: In(createCoffeeDto.flavorIds),
