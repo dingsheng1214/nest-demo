@@ -22,7 +22,9 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 全局模块
-      envFilePath: '.dev.env', // 自定义 env 文件路径
+      envFilePath: `.env.${
+        process.env.NODE_ENV === 'development' ? 'dev' : 'prod'
+      }`, // 自定义 env 文件路径
       // ignoreEnvFile: true, // 禁止加载环境变量
       validationSchema: Joi.object({
         DATABASE_HOST: Joi.required(),
