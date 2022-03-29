@@ -15,7 +15,13 @@ import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
 @Controller('coffees')
 export class CoffeesController {
-  constructor(private readonly coffeesService: CoffeesService) {}
+  constructor(private readonly coffeesService: CoffeesService) {
+    /**
+     * scope 实际上是在注入链中冒泡的
+     * 当使用 Scope.REQUEST  作用域的 provider 时， controller的作用域也会变成Scope.REQUEST
+     */
+    console.log('CoffeesController instantiated');
+  }
 
   @Post()
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
