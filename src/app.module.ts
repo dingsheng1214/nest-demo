@@ -8,7 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CatsController } from './cats/cats.controller';
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
@@ -17,9 +17,23 @@ import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { PublicGuard } from './common/guards/public.guard';
 
 @Module({
   imports: [
+    // 异步模块将在最后解析
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'postgres',
+        host: process.env.DATABASE_HOST,
+        port: process.env.DATABASE_PORT,
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_DATABASE,
+        autoLoadEntities: true,
+        synchronize: true, // 生产环境禁用，自动根据entity实体类生成对应的SQL 表
+      }),
+    }),
     ConfigModule.forRoot({
       isGlobal: true, // 全局模块
       envFilePath: `.env.${
@@ -30,16 +44,6 @@ import * as Joi from 'joi';
         DATABASE_HOST: Joi.required(),
         DATABASE_PORT: Joi.required().default(5432),
       }),
-    }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: process.env.DATABASE_PORT,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_DATABASE,
-      autoLoadEntities: true,
-      synchronize: true, // 生产环境禁用，自动根据entity实体类生成对应的SQL 表
     }),
     MongooseModule.forRoot('mongodb://mongo:mongo@localhost:27017/nest-demo'),
     CatsModule,
@@ -53,6 +57,10 @@ import * as Joi from 'joi';
     //   provide: APP_FILTER,
     //   useClass: HttpExceptionFilter,
     // },
+    {
+      provide: APP_GUARD,
+      useClass: PublicGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {

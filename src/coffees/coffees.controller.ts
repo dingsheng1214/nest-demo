@@ -12,6 +12,7 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('coffees')
 export class CoffeesController {
@@ -29,6 +30,7 @@ export class CoffeesController {
     return this.coffeesService.create(createCoffeeDto);
   }
 
+  @Public(false)
   @Get()
   findAll() {
     return this.coffeesService.findAll();
@@ -39,6 +41,7 @@ export class CoffeesController {
     return await this.coffeesService.findAllWithPagination(paginationQueryDto);
   }
 
+  @Public(true)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.coffeesService.findOne(id);
