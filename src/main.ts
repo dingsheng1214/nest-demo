@@ -4,6 +4,7 @@ import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 async function bootstrap() {
+  console.log('当前环境:', process.env.NODE_ENV);
   const app = await NestFactory.create(AppModule);
   // 全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());

@@ -15,16 +15,27 @@ import { CoffeesModule } from './coffees/coffees.module';
 import { CoffeesController } from './coffees/coffees.controller';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // 全局模块
+      envFilePath: '.dev.env', // 自定义 env 文件路径
+      // ignoreEnvFile: true, // 禁止加载环境变量
+      validationSchema: Joi.object({
+        DATABASE_HOST: Joi.required(),
+        DATABASE_PORT: Joi.required().default(5432),
+      }),
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: '5432',
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      host: process.env.DATABASE_HOST,
+      port: process.env.DATABASE_PORT,
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_DATABASE,
       autoLoadEntities: true,
       synchronize: true, // 生产环境禁用，自动根据entity实体类生成对应的SQL 表
     }),
