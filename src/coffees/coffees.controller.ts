@@ -15,7 +15,9 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { WrapResponseInterceptor } from '../common/interceptors/wrap-response.interceptor';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('coffees')
 @Controller('coffees')
 // @UseInterceptors(WrapResponseInterceptor) // 控制器范围的拦截器
 export class CoffeesController {
