@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 
 async function bootstrap() {
   console.log('当前环境:', process.env.NODE_ENV);
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalGuards(new ApiKeyGuard());
+  app.useGlobalInterceptors(new TimeoutInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({

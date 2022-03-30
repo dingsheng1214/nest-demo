@@ -8,7 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CatsController } from './cats/cats.controller';
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
@@ -18,6 +18,7 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { PublicGuard } from './common/guards/public.guard';
+import { WrapResponseInterceptor } from './common/interceptors/wrap-response.interceptor';
 
 @Module({
   imports: [
@@ -60,6 +61,10 @@ import { PublicGuard } from './common/guards/public.guard';
     {
       provide: APP_GUARD,
       useClass: PublicGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: WrapResponseInterceptor,
     },
   ],
 })

@@ -7,14 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { Public } from '../common/decorators/public.decorator';
+import { WrapResponseInterceptor } from '../common/interceptors/wrap-response.interceptor';
 
 @Controller('coffees')
+// @UseInterceptors(WrapResponseInterceptor) // 控制器范围的拦截器
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {
     /**
@@ -36,8 +39,10 @@ export class CoffeesController {
     return this.coffeesService.findAll();
   }
 
+  @Public(true)
   @Get('/page')
   async findAllWithPagination(@Body() paginationQueryDto: PaginationQueryDto) {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     return await this.coffeesService.findAllWithPagination(paginationQueryDto);
   }
 
