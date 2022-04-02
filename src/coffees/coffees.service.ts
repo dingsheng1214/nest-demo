@@ -119,7 +119,6 @@ export class CoffeesService {
       await queryRunner.commitTransaction();
       return result;
     } catch (err) {
-      console.log('111', err);
       //如果遇到错误，可以回滚事务
       await queryRunner.rollbackTransaction();
     } finally {

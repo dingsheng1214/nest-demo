@@ -9,7 +9,6 @@ export class PublicGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log(context.getHandler());
     // 1 获取controller中对应的 路由处理函数
     const routeHandler = context.getHandler();
     // 2 通过反射获取 路由处理函数 的自定义装饰器

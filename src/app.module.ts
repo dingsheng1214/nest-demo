@@ -1,18 +1,10 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CatsController } from './cats/cats.controller';
 import { CatsModule } from './cats/cats.module';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/coffees.module';
-import { CoffeesController } from './coffees/coffees.controller';
 import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
@@ -68,18 +60,4 @@ import { WrapResponseInterceptor } from './common/interceptors/wrap-response.int
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
-    consumer
-      .apply(LoggerMiddleware)
-      // .forRoutes('cats')
-      // .forRoutes({ path: 'cats', method: RequestMethod.GET })
-      // .forRoutes({ path: '*', method: RequestMethod.ALL });
-      .exclude(
-        { path: 'cats', method: RequestMethod.GET },
-        { path: 'cats', method: RequestMethod.POST },
-        'cats/(.*)',
-      )
-      .forRoutes(CatsController, CoffeesController);
-  }
-}
+export class AppModule {}

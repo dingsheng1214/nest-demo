@@ -5,11 +5,16 @@ import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import * as express from 'express';
 
 async function bootstrap() {
   console.log('当前环境:', process.env.NODE_ENV);
   const app = await NestFactory.create(AppModule);
+  app.use(express.json()); // For parsing application/json
+  app.use(express.urlencoded({ extended: true }));
 
+  app.use(LoggerMiddleware);
   app.useGlobalGuards(new ApiKeyGuard());
   app.useGlobalInterceptors(new TimeoutInterceptor());
 

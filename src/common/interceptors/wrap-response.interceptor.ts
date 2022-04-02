@@ -5,6 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map, Observable, tap } from 'rxjs';
+import { Logger } from '../utils/log4js';
 
 /**
  *
@@ -29,12 +30,25 @@ import { map, Observable, tap } from 'rxjs';
 @Injectable()
 export class WrapResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const req = context.switchToHttp().getRequest();
     // handle() 返回一个 Observable。此流包含从路由处理程序返回的值
     return next.handle().pipe(
-      map((data) => ({
-        statusCode: 0,
-        data,
-      })),
+      map((data) => {
+        const logFormat = ` <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    Request original url: ${req.originalUrl}
+    Method: ${req.method}
+    IP: ${req.ip}
+    Response data: ${JSON.stringify(
+      data,
+    )} \n  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
+        Logger.info(logFormat);
+        Logger.access(logFormat);
+
+        return {
+          statusCode: 0,
+          data,
+        };
+      }),
     );
   }
 }

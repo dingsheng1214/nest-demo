@@ -50,7 +50,6 @@ describe('[Feature] coffees - /coffees', () => {
     );
     // 全局异常过滤器
     app.useGlobalFilters(new HttpExceptionFilter());
-    console.log('1111111111');
     await app.init();
   });
 
