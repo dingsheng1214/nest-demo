@@ -12,6 +12,17 @@ services:
       POSTGRES_USERNAME: postgres
     volumes:
       - db:/var/lib/postgresql/data
+  e2e-postgresdb:
+    image: postgres
+    restart: always
+    container_name: nest-demo-e2e-pg
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USERNAME: postgres
+    volumes:
+      - db:/var/lib/postgresql/e2e-data
   mongodb:
     image: mongo
     restart: always
