@@ -11,6 +11,8 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { PublicGuard } from './common/guards/public.guard';
 import { WrapResponseInterceptor } from './common/interceptors/wrap-response.interceptor';
+import { PrismaModule } from './prisma/prisma.module';
+import { ArticlesModule } from './articles/articles.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { WrapResponseInterceptor } from './common/interceptors/wrap-response.int
     CoffeesModule,
     CoffeeRatingModule,
     DatabaseModule.register('mysql'),
+    PrismaModule,
+    ArticlesModule,
   ],
   providers: [
     // 全局异常过滤器

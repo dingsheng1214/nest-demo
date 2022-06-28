@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+// 1 由postgresql提供数据库支持， 并指定数据库连接字符串
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 2 指明你想要一个数据库连接，用于发送查询到数据库的查询语句。
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 3 定义一个模型，用于描述你的数据库表结构。一个模型对应一张表
+model Article {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String?
+  body        String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

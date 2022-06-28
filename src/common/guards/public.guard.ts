@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class PublicGuard implements CanActivate {
@@ -14,6 +14,7 @@ export class PublicGuard implements CanActivate {
     // 2 通过反射获取 路由处理函数 的自定义装饰器
     const isPublic = this.reflector.get<string>('isPublic', routeHandler);
     console.log('isPublic', isPublic);
-    return !!isPublic;
+    // return !!isPublic;
+    return true;
   }
 }
